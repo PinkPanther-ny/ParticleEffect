@@ -9,12 +9,11 @@ public class Rocket {
     private Point location;
     private Vector2 velocity;
     private double angle;
-    private double followSpeed = 1.5;
 
     private final Timer keyTimer = new Timer(20);
 
     public void draw(Input input){
-        System.out.println(velocity.lengthSquared());
+        //System.out.println(velocity.lengthSquared());
         rocketImage.draw(this.location.x, this.location.y, new DrawOptions().setRotation(angle));
 
         this.update(input);
@@ -26,21 +25,24 @@ public class Rocket {
         Vector2 newVelocity = new Vector2(mouse.x - this.location.x, mouse.y - this.location.y);
 
         this.angle = Math.PI * 0.5 + Math.atan2(velocity.y , velocity.x);
+        double followSpeed = 1.5;
         this.velocity = newVelocity.normalised().mul(newVelocity.length() * 0.02 * followSpeed);
         this.location = new Point(this.location.x + this.velocity.x, this.location.y + this.velocity.y);
 
+        double OldMax = 400, OldMin = 0;
 
-        double OldLifeRange = (400 - 0);    // Speed
-        double NewLifeRange = (1000 - 600); //  Fade time
+        double OldLifeRange = (OldMax - OldMin);    // Speed
+        double NewLifeMax = 1000, NewLifeMin = 600;
+        double NewLifeRange = (NewLifeMax - NewLifeMin); //  Fade time
 
-        double NewLifeValue = (((this.velocity.lengthSquared() - 0) * NewLifeRange) / OldLifeRange) + 600;
-        if (OldLifeRange == 0){NewLifeValue = 600;}
+        double NewLifeValue = (((this.velocity.lengthSquared() - OldMin) * NewLifeRange) / OldLifeRange) + NewLifeMin;
         Particle.setLife(NewLifeValue);
 
-        double OldSizeRange = (400 - 0);    // Speed
-        double NewSizeRange = (1.6 - 0.8); // Scale
+        double OldSizeRange = (OldMax - OldMin);    // Speed
+        double NewSizeMax = 1.9, NewSizeMin = 1.0;
+        double NewSizeRange = (NewSizeMax - NewSizeMin); // Scale
 
-        double NewSizeValue = (((this.velocity.lengthSquared() - 0) * NewSizeRange) / OldSizeRange) + 0.8;
+        double NewSizeValue = (((this.velocity.lengthSquared() - OldMin) * NewSizeRange) / OldSizeRange) + NewSizeMin;
         Particle.setScale(new Vector2(NewSizeValue, NewSizeValue));
 
 
@@ -93,7 +95,4 @@ public class Rocket {
         return p;
     }
 
-    public Vector2 getVelocity() {
-        return velocity;
-    }
 }

@@ -25,13 +25,11 @@ public class Particle {
     public Particle(Point location, Input input, Game game){
         listenToKey(input);
 
-        //Point location = input.getMousePosition();
         double xMax = +xMargin, xMin = -xMargin;
         double x = Math.random() * (xMax - xMin + 1) + xMin;
         double y = Math.random() * (yMax - yMin + 1) + yMin;
 
         this.location = location;
-        //this.velocity = new Vector2(x,y);
         this.velocity = new Vector2(
                 x*Math.cos(game.getRocket().getAngle())-y * Math.sin(game.getRocket().getAngle()),
                 x*Math.sin(game.getRocket().getAngle())+y * Math.cos(game.getRocket().getAngle())
@@ -109,11 +107,6 @@ public class Particle {
 
     private void listenToKey(Input input){
 
-        /*if(input.isDown(Keys.A) && keyTimer.isCool()){
-            life += 100;
-        }else if(input.isDown(Keys.S) && keyTimer.isCool() && life > 100){
-            life -= 100;
-        }else */
         if(input.isDown(Keys.D) && keyTimer.isCool()){
             xMargin += 0.1;
         }else if(input.isDown(Keys.F) && keyTimer.isCool()){
