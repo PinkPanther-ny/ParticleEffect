@@ -7,7 +7,7 @@ public class Game extends AbstractGame {
     private final ArrayList<Particle> particles;
     private final ArrayList<Particle> mouseParticles;
     private static Rocket rocket;
-    private int totalParticle = 50;
+    private int totalParticle = 20;
     private double spawnCooldown = 0.5;
     private Timer particleTimer = new Timer(spawnCooldown);
     private final Timer keyTimer = new Timer(100);

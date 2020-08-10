@@ -14,9 +14,7 @@ public class Rocket {
     private final Timer keyTimer = new Timer(20);
 
     public void draw(Input input){
-        //System.out.println(velocity.lengthSquared());
         rocketImage.draw(this.location.x, this.location.y, new DrawOptions().setRotation(angle));
-
         this.update(input);
     }
 
@@ -29,20 +27,22 @@ public class Rocket {
         this.velocity = newVelocity.normalised().mul(newVelocity.length() * 0.02 * followSpeed);
         this.location = new Point(this.location.x + this.velocity.x, this.location.y + this.velocity.y);
 
-        double OldMax = 400, OldMin = 0;
 
+        double OldMax = 400, OldMin = 0;
         double OldLifeRange = (OldMax - OldMin);    // Speed
         double NewLifeMax = 1000, NewLifeMin = 600;
         double NewLifeRange = (NewLifeMax - NewLifeMin); //  Fade time
-
         double NewLifeValue = (((this.velocity.lengthSquared() - OldMin) * NewLifeRange) / OldLifeRange) + NewLifeMin;
+        if (NewLifeValue > 1200){NewLifeValue = 1200;}
         Particle.setLife(NewLifeValue);
 
+
+        double maxScale = 2.2;
         double OldSizeRange = (OldMax - OldMin);    // Speed
         double NewSizeMax = 1.9, NewSizeMin = 1.0;
         double NewSizeRange = (NewSizeMax - NewSizeMin); // Scale
-
         double NewSizeValue = (((this.velocity.lengthSquared() - OldMin) * NewSizeRange) / OldSizeRange) + NewSizeMin;
+        if (NewSizeValue > maxScale){NewSizeValue = maxScale;}
         Particle.setScale(new Vector2(NewSizeValue, NewSizeValue));
 
 

@@ -9,9 +9,9 @@ public class Particle {
     private final double rotationSpeed;
     private double rotation = 0;
     private final double birthday;
-    private static double life = 600;
+    private static double life = 0;
 
-    private static double xMargin = 2.0;
+    private static double xMargin = 5.0;
     private static double yMax = 9;
     private static double yMin = 4;
 
@@ -54,27 +54,33 @@ public class Particle {
 
     public void draw(){
         DrawOptions drawOptions;
+
+        double gbColour = 1 - (0.6 * Game.getRocketSpeed()/450);
+        double xScale = scale.x * this.getRemainLife();
+        double yScale = scale.y * this.getRemainLife();
+
+
         if (isNormalColour && isNormalScale){
             drawOptions = new DrawOptions().
                     setRotation(this.getRotation()).
-                    setBlendColour( 1, 1 - (0.6 * Game.getRocketSpeed()/450), 1 - (0.6 * Game.getRocketSpeed()/450), this.getRemainLife()).
-                    setScale(scale.x * this.getRemainLife(), scale.y * this.getRemainLife());
+                    setBlendColour( 1, gbColour, gbColour, this.getRemainLife()).
+                    setScale(xScale, yScale);
         }else if((!isNormalColour) && isNormalScale){
             drawOptions = new DrawOptions().
                     setRotation(this.getRotation()).
                     setBlendColour( r, g, b, this.getRemainLife()).
-                    setScale(scale.x * this.getRemainLife(), scale.y * this.getRemainLife());
+                    setScale(xScale, yScale);
         }else if(isNormalColour && (!isNormalScale)){
             drawOptions = new DrawOptions().
                     setRotation(this.getRotation()).
-                    setBlendColour( 1, 1 - (0.6 * this.velocity.lengthSquared()/450), 1 - (0.6 * this.velocity.lengthSquared()/450), this.getRemainLife()).
-                    setScale(Math.random() * scale.x * this.getRemainLife(), Math.random() * scale.y * this.getRemainLife());
+                    setBlendColour( 1, gbColour, gbColour, this.getRemainLife()).
+                    setScale(Math.random() * xScale, Math.random() * yScale);
         }else{
 
             drawOptions = new DrawOptions().
                     setRotation(this.getRotation()).
                     setBlendColour( r, g, b, this.getRemainLife()).
-                    setScale(Math.random() * scale.x * this.getRemainLife(), Math.random() * scale.y * this.getRemainLife());
+                    setScale(Math.random() * xScale, Math.random() * yScale);
         }
 
         particleImage.draw(
