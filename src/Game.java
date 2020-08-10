@@ -5,14 +5,16 @@ import java.util.ArrayList;
 public class Game extends AbstractGame {
 
     private final ArrayList<Particle> particles;
-    private Rocket rocket;
+    private final ArrayList<Particle> mouseParticles;
+    private static Rocket rocket;
     private int totalParticle = 50;
     private double spawnCooldown = 0.5;
     private Timer particleTimer = new Timer(spawnCooldown);
     private final Timer keyTimer = new Timer(100);
 
     private final Font myInfo = new Font("res/fonts/DejaVuSans-Bold.ttf",20);
-    private final Image bg = new Image("res/images/bg3.png");
+    private final Font warn = new Font("res/fonts/DejaVuSans-Bold.ttf",60);
+    private final Image bg = new Image("res/images/bg4.png");
 
     public static void main(String[] args) {
         // Create new instance of game and run it
@@ -23,13 +25,21 @@ public class Game extends AbstractGame {
      * Setup the game
      */
     public Game(){
+        super(1920,1080,"Rocket");
+
         particles = new ArrayList<>();
+        mouseParticles = new ArrayList<>();
         rocket = new Rocket();
         // Constructor
     }
 
-    public Rocket getRocket() {
+    public static Rocket getRocket() {
         return rocket;
+    }
+
+    public static double getRocketSpeed(){
+        return Game.getRocket().getVelocity().lengthSquared();
+
     }
 
     /**
@@ -46,11 +56,11 @@ public class Game extends AbstractGame {
         }
 
         if (particles.size() < totalParticle && particleTimer.isCool()){
-            particles.add(new Particle(rocket.getSparkLocation(), input, this));
+            particles.add(new Particle(rocket.getSparkLocation(), input));
 
         }else if (particles.size() == totalParticle && particleTimer.isCool()){
             particles.remove(0);
-            particles.add(new Particle(rocket.getSparkLocation(), input, this));
+            particles.add(new Particle(rocket.getSparkLocation(), input));
 
         }else{
             while (particles.size()>totalParticle){
@@ -59,7 +69,17 @@ public class Game extends AbstractGame {
 
         }
 
+        if (input.isDown(MouseButtons.LEFT)){
+            mouseParticles.add(new Particle(input.getMousePosition(), input));
+
+        }
+
         for (Particle particle : particles) {
+
+            particle.draw();
+
+        }
+        for (Particle particle : mouseParticles) {
 
             particle.draw();
 
@@ -88,9 +108,15 @@ public class Game extends AbstractGame {
                                 "\nxMargin                   (D+/F-) : " + Math.round(particles.get(particles.size()-1).getXMargin() * 10) / 10.0 +
                                 "\nyMax                        (C+/V-) : " + Math.round(particles.get(particles.size()-1).getYMax() * 10) / 10.0 +
                                 "\nyMin                         (Z+/X-) : " + Math.round(particles.get(particles.size()-1).getYMin() * 10) / 10.0
-                , 20, 600
+                , 20, Window.getHeight()-170
                 , new DrawOptions().setBlendColour(0,0,0)
         );
+
+        if (particles.get(particles.size()-1).getLife() >=1000){
+            String warnString = "POWER UP";
+            warn.drawString(warnString, Window.getWidth()/2.0 - warn.getWidth(warnString)*0.5, Window.getHeight()-160, new DrawOptions().setBlendColour(205/255.0,0,0));
+        }
+
     }
 
 }

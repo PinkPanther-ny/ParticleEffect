@@ -1,7 +1,4 @@
-import bagel.DrawOptions;
-import bagel.Image;
-import bagel.Input;
-import bagel.Keys;
+import bagel.*;
 import bagel.util.Point;
 import bagel.util.Vector2;
 
@@ -21,9 +18,18 @@ public class Particle {
     private static Vector2 scale = new Vector2(1,1);
 
     private final Timer keyTimer = new Timer(100);
+    private final double r,g,b;
 
-    public Particle(Point location, Input input, Game game){
+    private static final boolean isNormalColour = true, isNormalScale = true;
+
+
+    public Particle(Point location, Input input){
         listenToKey(input);
+
+        this.r = Math.random();
+        this.g = Math.random();
+        this.b = Math.random();
+
 
         double xMax = +xMargin, xMin = -xMargin;
         double x = Math.random() * (xMax - xMin + 1) + xMin;
@@ -31,8 +37,8 @@ public class Particle {
 
         this.location = location;
         this.velocity = new Vector2(
-                x*Math.cos(game.getRocket().getAngle())-y * Math.sin(game.getRocket().getAngle()),
-                x*Math.sin(game.getRocket().getAngle())+y * Math.cos(game.getRocket().getAngle())
+                x*Math.cos(Game.getRocket().getAngle())-y * Math.sin(Game.getRocket().getAngle()),
+                x*Math.sin(Game.getRocket().getAngle())+y * Math.cos(Game.getRocket().getAngle())
         );
         this.rotationSpeed = Math.random() * 0.3 - 0.3/2;
         this.birthday = System.currentTimeMillis();
@@ -47,15 +53,37 @@ public class Particle {
     }
 
     public void draw(){
+        DrawOptions drawOptions;
+        if (isNormalColour && isNormalScale){
+            drawOptions = new DrawOptions().
+                    setRotation(this.getRotation()).
+                    setBlendColour( 1, 1 - (0.6 * Game.getRocketSpeed()/450), 1 - (0.6 * Game.getRocketSpeed()/450), this.getRemainLife()).
+                    setScale(scale.x * this.getRemainLife(), scale.y * this.getRemainLife());
+        }else if((!isNormalColour) && isNormalScale){
+            drawOptions = new DrawOptions().
+                    setRotation(this.getRotation()).
+                    setBlendColour( r, g, b, this.getRemainLife()).
+                    setScale(scale.x * this.getRemainLife(), scale.y * this.getRemainLife());
+        }else if(isNormalColour && (!isNormalScale)){
+            drawOptions = new DrawOptions().
+                    setRotation(this.getRotation()).
+                    setBlendColour( 1, 1 - (0.6 * this.velocity.lengthSquared()/450), 1 - (0.6 * this.velocity.lengthSquared()/450), this.getRemainLife()).
+                    setScale(Math.random() * scale.x * this.getRemainLife(), Math.random() * scale.y * this.getRemainLife());
+        }else{
+
+            drawOptions = new DrawOptions().
+                    setRotation(this.getRotation()).
+                    setBlendColour( r, g, b, this.getRemainLife()).
+                    setScale(Math.random() * scale.x * this.getRemainLife(), Math.random() * scale.y * this.getRemainLife());
+        }
 
         particleImage.draw(
                 this.location.x,
                 this.location.y,
-                new DrawOptions().
-                        setRotation(this.getRotation()).
-                        setBlendColour(1,1,1, this.getRemainLife()).
-                        setScale(scale.x * this.getRemainLife(), scale.y * this.getRemainLife())
+                drawOptions
         );
+
+
         this.update();
     }
 

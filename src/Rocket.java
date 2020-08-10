@@ -10,6 +10,7 @@ public class Rocket {
     private Vector2 velocity;
     private double angle;
 
+    private static final double followSpeed = 2.2;
     private final Timer keyTimer = new Timer(20);
 
     public void draw(Input input){
@@ -25,7 +26,6 @@ public class Rocket {
         Vector2 newVelocity = new Vector2(mouse.x - this.location.x, mouse.y - this.location.y);
 
         this.angle = Math.PI * 0.5 + Math.atan2(velocity.y , velocity.x);
-        double followSpeed = 1.5;
         this.velocity = newVelocity.normalised().mul(newVelocity.length() * 0.02 * followSpeed);
         this.location = new Point(this.location.x + this.velocity.x, this.location.y + this.velocity.y);
 
@@ -95,4 +95,7 @@ public class Rocket {
         return p;
     }
 
+    public Vector2 getVelocity() {
+        return velocity;
+    }
 }
