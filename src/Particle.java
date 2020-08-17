@@ -9,27 +9,24 @@ public class Particle {
     private final double rotationSpeed;
     private double rotation = 0;
     private final double birthday;
-    private static double life = 0;
 
-    private static double xMargin = 5.0;
+    private static double life = 0;
+    private static double xMargin = 1.0;
     private static double yMax = 9;
     private static double yMin = 4;
 
+    private final double r,g,b;
     private static Vector2 scale = new Vector2(1,1);
 
-    private final Timer keyTimer = new Timer(100);
-    private final double r,g,b;
-
-    private static final boolean isNormalColour = true, isNormalScale = true;
+    private static final boolean isNormalColour = true;
+    private static final boolean isNormalScale = true;
 
 
-    public Particle(Point location, Input input){
-        listenToKey(input);
+    public Particle(Point location){
 
         this.r = Math.random();
         this.g = Math.random();
         this.b = Math.random();
-
 
         double xMax = +xMargin, xMin = -xMargin;
         double x = Math.random() * (xMax - xMin + 1) + xMin;
@@ -44,21 +41,13 @@ public class Particle {
         this.birthday = System.currentTimeMillis();
     }
 
-    public static void setLife(double life) {
-        Particle.life = life;
-    }
-
-    public static void setScale(Vector2 scale) {
-        Particle.scale = scale;
-    }
-
-    public void draw(){
+    public void draw(Point location){
         DrawOptions drawOptions;
 
         double gbColour = 1 - (0.6 * Game.getRocketSpeed()/450);
+
         double xScale = scale.x * this.getRemainLife();
         double yScale = scale.y * this.getRemainLife();
-
 
         if (isNormalColour && isNormalScale){
             drawOptions = new DrawOptions().
@@ -84,19 +73,42 @@ public class Particle {
         }
 
         particleImage.draw(
-                this.location.x,
-                this.location.y,
+                location.x,
+                location.y,
                 drawOptions
         );
 
-
-        this.update();
     }
 
-    private void update(){
-
+    public void update(){
         this.location = new Point(this.location.x + this.getVelocity().x, this.location.y + this.getVelocity().y);
         this.rotation = this.rotation + this.getRotationSpeed();
+    }
+
+
+
+    public static void setyMax(double yMax) {
+        Particle.yMax = yMax;
+    }
+
+    public static void setyMin(double yMin) {
+        Particle.yMin = yMin;
+    }
+
+    public static void setxMargin(double xMargin) {
+        Particle.xMargin = xMargin;
+    }
+
+    public static void setLife(double life) {
+        Particle.life = life;
+    }
+
+    public static void setScale(Vector2 scale) {
+        Particle.scale = scale;
+    }
+
+    public Point getLocation() {
+        return location;
     }
 
     private Vector2 getVelocity(){
@@ -115,51 +127,28 @@ public class Particle {
         return birthday;
     }
 
-    public double getLife() {
+    public static double getLife() {
         return life;
     }
 
-    public double getXMargin() {
-        return xMargin;
-    }
-
-    public double getYMax() {
-        return yMax;
-    }
-
-    public double getYMin() {
-        return yMin;
-    }
-
     private double getRemainLife(){
-        return 1 - ((System.currentTimeMillis() - this.getBirthday()) / this.getLife());
+        return 1 - ((System.currentTimeMillis() - this.getBirthday()) / Particle.getLife());
     }
 
-    public Vector2 getScale() {
+    public static Vector2 getScale() {
         return scale;
     }
 
-    private void listenToKey(Input input){
+    public static double getxMargin() {
+        return xMargin;
+    }
 
-        if(input.isDown(Keys.D) && keyTimer.isCool()){
-            xMargin += 0.1;
-        }else if(input.isDown(Keys.F) && keyTimer.isCool()){
-            xMargin -= 0.1;
-        }else if(input.isDown(Keys.Z) && keyTimer.isCool()){
-            yMin += 0.1;
-        }else if(input.isDown(Keys.X) && keyTimer.isCool()){
-            yMin -= 0.1;
-        }else if(input.isDown(Keys.C) && keyTimer.isCool()){
-            yMax += 0.1;
-        }else if(input.isDown(Keys.V) && keyTimer.isCool()){
-            yMax -= 0.1;
-        }else if(input.isDown(Keys.O) && keyTimer.isCool()){
-            scale = new Vector2(scale.x + 0.05, scale.y + 0.05);
-        }else if(input.isDown(Keys.P) && keyTimer.isCool() && scale.x>0.1){
-            scale = new Vector2(scale.x - 0.05, scale.y - 0.05);
-        }
+    public static double getyMax() {
+        return yMax;
+    }
 
-
+    public static double getyMin() {
+        return yMin;
     }
 
 }
